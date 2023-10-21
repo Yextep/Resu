@@ -1,0 +1,5 @@
+gensim==3.8.3
+pytesseract
+docx2txt
+PyPDF2
+nltk
