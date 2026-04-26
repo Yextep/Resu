@@ -1,27 +1,100 @@
-# Resumidor de texto (.txt, .docx, .pdf)
-
-Este script utiliza **gensim** para generar resúmenes de mejor calidad y también es capaz de procesar archivos **PDF** utilizando **pytesseract** para extraer texto de los documentos **PDF**. Al momento de ejecutarlo solicita al usuario la ubicación del archivo, sino está en una ruta en específico entonces asume que está en la ruta actual. Luego lista los archivos disponibles en esa ubicación, después permite al usuario seleccionar un archivo y luego resume ese archivo. El resúmen se guarda en un nuevo archivo de texto en la misma ubicación.
-
-**Resu.py** permite al usuario ingresar la cantidad de sentencias que desea incluir en el resúmen, el resúmen se generará según el número de sentencias ingresadas por el usuario. Esto proporciona una mayor flexibilidad en la generación de resúmenes de documentos de texto.
+# Resumidor de texto (.txt, .docx, .pdf etc)
 
 <img align="center" height="480" width="1000" alt="GIF" src="https://github.com/Yextep/Resu/assets/114537444/126d6e99-30ae-4715-90ae-efa4444d2370"/>
 
 
+Herramienta offline en Python para extraer texto y generar resúmenes sin IA generativa ni APIs externas. Usa técnicas clásicas de procesamiento de texto: TF-IDF, TextRank, MMR, extracción de palabras clave, heurísticas por secciones y análisis léxico de tono.
+
+## Formatos soportados
+
+- Word OpenXML: `.docx`, `.docm`, `.dotx`
+- Word legado: `.doc`, `.dot` usando LibreOffice o antiword si están instalados
+- Texto: `.txt`, `.md`, `.rtf`, `.html`, `.htm`
+- Lectura: `.pdf`, `.epub`
+
 ## Instalación
 
-Clonamos el repositorio
 ```bash
-git clone https://github.com/Yextep/Resu
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
+
+pip install -r requirements.txt
 ```
-Accedemos a la carpeta
+
+### Dependencias del sistema para OCR y Word legado
+
+OCR de PDF escaneado:
+                                                                       - Instala Tesseract OCR.
+- Instala Poppler para que `pdf2image` pueda convertir páginas PDF a imágenes.
+
+Word `.doc` / `.dot` legado:
+
+- Recomendado: instala LibreOffice y asegúrate de que el comando `soffice` o `libreoffice` esté en el PATH.
+- Alternativa Linux/macOS: `antiword`.
+
+## Uso interactivo
+
 ```bash
-cd Resu
+python resumidor_pro.py
 ```
-Instalamos requerimientos
+
+El menú permite elegir archivo(s), modo de resumen, OCR opcional, formato de salida y carpeta destino.
+
+## Uso por comandos
+
+Resumen por tiempo disponible:
+
 ```bash
-pip install -r requeriments.txt
+python resumidor_pro.py documento.pdf --mode time --minutes 5 --ocr --format md
 ```
-Ejecutamos el Script
+
+Resumen por cantidad de palabras:
+
 ```bash
-python3 resu.py
+python resumidor_pro.py informe.docx --mode words --words 450
 ```
+
+Resumen para principiante:
+
+```bash
+python resumidor_pro.py informe.pdf --mode persona --persona principiante --words 400
+```
+
+Resumen por ángulo de interés:
+
+```bash
+python resumidor_pro.py contrato.pdf --mode query --query "cláusulas de rescisión y multas" --words 500
+```
+
+Comparativo de varios archivos:
+
+```bash
+python resumidor_pro.py fuente1.pdf fuente2.epub fuente3.docx --mode comparative --words 800
+```
+
+Informe completo:
+
+```bash
+python resumidor_pro.py documento.md --mode full --format html
+```
+
+## Modos incluidos
+
+- `time`: ajusta extensión por minutos y palabras por minuto.
+- `words`: resumen por cantidad objetivo de palabras.
+- `persona`: adapta selección y estructura para `principiante`, `neutral` o `experto`.
+- `hierarchical`: titular, 3 puntos clave, resumen ejecutivo y resumen por secciones.
+- `query`: enfoque por tema, cláusula, pregunta o ángulo de interés.
+- `comparative`: síntesis comparativa de varios documentos, puntos comunes, aportes únicos y posibles contradicciones.
+- `sentiment`: tono y sentimiento con léxico local.
+- `faq`: preguntas frecuentes generadas desde palabras clave.
+- `simple`: explicación simple basada en frases claras del documento.
+- `concept`: mapa conceptual Mermaid y tabla de términos.
+- `full`: informe con varios módulos combinados.
+
+## Limitaciones honestas
+
+Este proyecto no usa IA generativa. Por eso no "entiende" como un LLM ni redacta paráfrasis profundas. En su lugar, selecciona, ordena y estructura las mejores frases del documento. Las contradicciones, el tono y las palabras clave son heurísticas: útiles para exploración, no una verificación jurídica, científica o contable definitiva.
