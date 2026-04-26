@@ -1,5 +1,16 @@
-gensim==3.8.3
-pytesseract
-docx2txt
-PyPDF2
-nltk
+# UI profesional de consola
+rich>=14.0.0
+
+# PDF de texto digital
+pypdf>=6.0.0
+
+# OCR opcional para PDFs escaneados; requiere Tesseract y Poppler instalados en el sistema
+pdf2image>=1.17.0
+pytesseract>=0.3.13
+Pillow>=10.0.0
+
+# EPUB / HTML / RTF
+ebooklib>=0.19
+beautifulsoup4>=4.12.0
+striprtf>=0.0.29
+charset-normalizer>=3.0.0
